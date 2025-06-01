@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="v4posme_printer_mobile_services.MainPage"
+             Title="posMe Printer">
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="30,0"
+            Spacing="25">
+            <Image
+                Source="pm_png_192px.png"
+                HeightRequest="185"
+                Aspect="AspectFit"
+                SemanticProperties.Description="dot net bot in a hovercraft number nine" />
+
+            <Label
+                Text="posMe"
+                Style="{StaticResource Headline}"
+                SemanticProperties.HeadingLevel="Level1" />
+
+            <Label
+                Text="Servicio de Busqueda de archivos pdf para impresión directa"
+                Style="{StaticResource SubHeadline}"
+                SemanticProperties.HeadingLevel="Level2"
+                SemanticProperties.Description="Servicio de Busqueda de archivos pdf para impresión directa" />
+
+            <Button
+                x:Name="BtnStart"
+                BackgroundColor="{StaticResource Primary}"
+                Text="Iniciar servicio de busqueda" 
+                SemanticProperties.Hint="Iniciar servicio de busqueda"
+                Clicked="OnStartClicked"
+                HorizontalOptions="Fill" />
+            <Button
+                x:Name="BtnStop"
+                BackgroundColor="{StaticResource Secondary}"
+                Text="Detener servicio de busqueda" 
+                SemanticProperties.Hint="Detener servicio de busqueda"
+                Clicked="OnStopClicked"
+                HorizontalOptions="Fill" />
+
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dxe="clr-namespace:DevExpress.Maui.Editors;assembly=DevExpress.Maui.Editors"
+             xmlns:dxco="clr-namespace:DevExpress.Maui.Controls;assembly=DevExpress.Maui.Controls"
+             xmlns:dx="clr-namespace:DevExpress.Maui.Core;assembly=DevExpress.Maui.Core"
+             xmlns:viewModels="clr-namespace:v4posme_printer_mobile_services.ViewModels"
+             Title="{Binding Title}"
+             x:Class="v4posme_printer_mobile_services.Views.ParametersPage">
+    <ContentPage.BindingContext>
+        <viewModels:PosMeParameterViewModel />
+    </ContentPage.BindingContext>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Command="{Binding SaveCommand}" Text="Save" IconImageSource="{AppThemeBinding Light=save, Dark=save}" />
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <RefreshView IsRefreshing="{Binding IsRefreshing}"
+                     Refreshing="RefreshView_OnRefreshing"
+                     RefreshColor="{StaticResource Primary}"
+                     Command="{Binding RefreshCommand}">
+            <ScrollView>
+                <dx:DXStackLayout Orientation="Vertical"
+                                  Margin="15"
+                                  Padding="15">
+                    <dxco:DXPopup x:Name="Popup"
+                                  AllowScrim="True"
+                                  BackgroundColor="{Binding PopupBackgroundColor}"
+                                  VerticalAlignment="Bottom"
+                                  ScrimColor="#b3adb9ce"
+                                  IsOpen="{Binding PopUpShow}">
+                        <StackLayout WidthRequest="250">
+                            <Label Text="{Binding Mensaje}"
+                                   FontAttributes="Bold"
+                                   FontSize="15"
+                                   TextColor="{StaticResource White}"
+                                   Margin="20, 20" />
+                            <Button Text="Aceptar"
+                                    Clicked="ClosePopup_Clicked"
+                                    BackgroundColor="{StaticResource Gray600}"
+                                    FontSize="20"
+                                    TextColor="White" />
+                        </StackLayout>
+                    </dxco:DXPopup>
+                    <dx:DXBorder Margin="15"
+                                 WidthRequest="100"
+                                 BackgroundColor="{AppThemeBinding Light={StaticResource CardColor}, Dark={StaticResource CardColorDark}}"
+                                 BorderThickness="0" CornerRadius="0">
+                        <Image Source="settings" WidthRequest="75" Aspect="Fill" />
+                    </dx:DXBorder>
+                    <dx:DXBorder
+                        Margin="15"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource CardColor}, Dark={StaticResource CardColorDark}}"
+                        BorderThickness="0" CornerRadius="0">
+                        <dxe:NumericEdit
+                            x:Name="TxtTimerSeconds"
+                            MinValue="0"
+                            LabelColor="{StaticResource Primary}"
+                            IsUpDownIconVisible="True"
+                            TextHorizontalAlignment="Start"
+                            IconColor="{StaticResource Primary}"
+                            StartIcon="quantity"
+                            Value="{Binding IntervalTime}"
+                            LabelText="Tiempo en Milisegundos del Servicio" />
+                    </dx:DXBorder>
+                   
+                    <dx:DXBorder Margin="15"
+                                 BackgroundColor="{AppThemeBinding Light={StaticResource CardColor}, Dark={StaticResource CardColorDark}}"
+                                 BorderThickness="0" CornerRadius="10">
+                        <dxe:TextEdit
+                            x:Name="TextPrinter"
+                            HasError="{Binding PrinterHasError}"
+                            ErrorText="Debe especificar un Nombre de impresora..."
+                            IsErrorIconVisible="True"
+                            IconColor="#006E98"
+                            StartIcon="textbox"
+                            Text="{Binding Printer}"
+                            LabelText="Nombre de impresora" />
+                    </dx:DXBorder>
+                   
+                    <dx:DXBorder Margin="15"
+                                 BackgroundColor="{AppThemeBinding Light={StaticResource CardColor}, Dark={StaticResource CardColorDark}}"
+                                 BorderThickness="0" CornerRadius="10">
+                        <dxe:TextEdit
+                            x:Name="TextPrefijo"
+                            HasError="{Binding PrefijoHasError}"
+                            ErrorText="Debe especificar un prefijo de archivo..."
+                            IsErrorIconVisible="True"
+                            IconColor="#006E98"
+                            StartIcon="textbox"
+                            Text="{Binding Prefijo}"
+                            LabelText="Prefijo de archivo" />
+                    </dx:DXBorder>
+                </dx:DXStackLayout>
+            </ScrollView>
+        </RefreshView>
+    </ContentPage.Content>
+</ContentPage>

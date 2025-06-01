@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="v4posme_printer_mobile_services.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:v4posme_printer_mobile_services"
+    xmlns:views="clr-namespace:v4posme_printer_mobile_services.Views"
+    Shell.FlyoutBehavior="Flyout"
+    Title="v4posme_printer_mobile_services">
+
+    <Shell.FlyoutHeader>
+        <Border BackgroundColor="White">
+            <Image Source="pm_png_96px.png" />
+        </Border>
+    </Shell.FlyoutHeader>
+    <FlyoutItem Title="Inicio" Icon="basic_home.svg">
+        <ShellContent Title="Inicio"
+                      Icon="basic_home.svg"
+                      ContentTemplate="{DataTemplate local:MainPage}"/>
+
+        <ShellContent Title="Parametros" Icon="parameters.svg"
+                      ContentTemplate="{DataTemplate views:ParametersPage}" />
+
+    </FlyoutItem>
+
+</Shell>
