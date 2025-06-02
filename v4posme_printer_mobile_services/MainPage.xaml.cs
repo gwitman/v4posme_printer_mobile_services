@@ -33,7 +33,7 @@ public partial class MainPage : ContentPage
 
             var context = Android.App.Application.Context;
             var intent  = new Intent(context, typeof(PosmeWatcherService));
-            context.StartForegroundService(intent);
+            context.StartService(intent);
             #endif
         }
         catch (Exception ex)
