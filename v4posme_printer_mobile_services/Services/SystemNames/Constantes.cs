@@ -37,5 +37,5 @@ public static class Constantes
     public const string DescripcionRealizarPago     = "LICENCIA MOBIL";
     public const string fileError                   = "v4posme_error_log.txt";
     public const string fileBackupJson              = "v4posme_backup_log.txt";
-    
+    public static string CantidadCopias             = "CANTIDAD_COPIAS";
 }

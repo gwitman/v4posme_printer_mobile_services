@@ -63,7 +63,23 @@
                             Value="{Binding IntervalTime}"
                             LabelText="Tiempo en Milisegundos del Servicio" />
                     </dx:DXBorder>
-                   
+
+                    <dx:DXBorder
+                        Margin="15"
+                        BackgroundColor="{AppThemeBinding Light={StaticResource CardColor}, Dark={StaticResource CardColorDark}}"
+                        BorderThickness="0" CornerRadius="0">
+                        <dxe:NumericEdit
+                            x:Name="TxtCantidadCopias"
+                            MinValue="0"
+                            LabelColor="{StaticResource Primary}"
+                            IsUpDownIconVisible="True"
+                            TextHorizontalAlignment="Start"
+                            IconColor="{StaticResource Primary}"
+                            StartIcon="quantity"
+                            Value="{Binding CantidadCopias}"
+                            LabelText="Cantidad Copias" />
+                    </dx:DXBorder>
+
                     <dx:DXBorder Margin="15"
                                  BackgroundColor="{AppThemeBinding Light={StaticResource CardColor}, Dark={StaticResource CardColorDark}}"
                                  BorderThickness="0" CornerRadius="10">

@@ -11,52 +11,27 @@ namespace v4posme_printer_mobile_services;
 
 public static class PdfRendererHelper
 {
-    private static Java.IO.File GetRealPathFromUri(ContentResolver contentResolver, Android.Net.Uri uri)
+    public static string[] ConvertPdfToBase64(Java.IO.File file, int dpi = 300)
     {
         try
         {
-            // Crear archivo temporal
-            var tempFile = Java.IO.File.CreateTempFile("pdf_", ".pdf");
-            tempFile.DeleteOnExit();
-
-            using var inputStream = contentResolver.OpenInputStream(uri);
-            if (inputStream == null) return null;
-
-            using var outputStream = new FileOutputStream(tempFile);
-
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = inputStream.Read(buffer)) > 0)
+            var parcelFileDescriptor = ParcelFileDescriptor.Open(file, ParcelFileMode.ReadOnly);
+            if (parcelFileDescriptor is null)
             {
-                outputStream.Write(buffer, 0, length);
+                throw new Exception("No se pudo leer el archivo");
             }
-
-            outputStream.Flush();
-            return tempFile;
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine("FileHelper", $"Error copying file: {ex.Message}");
-            return null;
-        }
-    }
-
-    public static string[]? ConvertPdfToBase64(Java.IO.File file, int dpi = 300)
-    {
-        try
-        {
-            using var renderer = new PdfRenderer(ParcelFileDescriptor.Open(file, ParcelFileMode.ReadOnly));
-            var base64Images = new string[renderer.PageCount];
+            using var renderer  = new PdfRenderer(parcelFileDescriptor);
+            var base64Images    = new string[renderer.PageCount];
 
             for (var i = 0; i < renderer.PageCount; i++)
             {
                 using var page = renderer.OpenPage(i);
 
-                var width = page.Width * dpi / 72;
-                var height = page.Height * dpi / 72;
+                var width   = page.Width * dpi / 72;
+                var height  = page.Height * dpi / 72;
 
-                using var bitmap = Android.Graphics.Bitmap.CreateBitmap(width, height, Android.Graphics.Bitmap.Config.Argb8888);
-                using (var canvas = new Android.Graphics.Canvas(bitmap))
+                using var bitmap    = Android.Graphics.Bitmap.CreateBitmap(width, height, Android.Graphics.Bitmap.Config.Argb8888);
+                using (var canvas   = new Android.Graphics.Canvas(bitmap))
                 {
                     canvas.DrawColor(Android.Graphics.Color.White);
                     var matrix = new Android.Graphics.Matrix();
@@ -70,13 +45,13 @@ public static class PdfRendererHelper
 
                 bitmap.Recycle();
             }
-
+            renderer.Close();
             return base64Images;
         }
         catch (Exception e)
         {
             Debug.WriteLine(e.Message);
-            return null;
+            return [];
         }
     }
 }

@@ -14,9 +14,10 @@ namespace v4posme_printer_mobile_services.ViewModels;
 public class PosMeParameterViewModel : BaseViewModel
 {
     private readonly IRepositoryTbParameterSystem repositoryTbParameterSystem;
-    private TbParameterSystem posmeFindPrinter  = new();
-    private TbParameterSystem posmeFindInterval = new();
-    private TbParameterSystem posmeFindPrefijo  = new();
+    private TbParameterSystem posmeFindPrinter         = new();
+    private TbParameterSystem posmeFindInterval        = new();
+    private TbParameterSystem posmeFindPrefijo         = new();
+    private TbParameterSystem posmeFindCantidadCopias  = new();
     
     public ICommand RefreshCommand { get; }
     public ICommand SaveCommand { get; }
@@ -69,7 +70,11 @@ public class PosMeParameterViewModel : BaseViewModel
                 Prefijo = posmeFindPrefijo.Value;
             }
 
-
+            posmeFindCantidadCopias = await repositoryTbParameterSystem.PosMeFindCantidadCopias();
+            if (!string.IsNullOrWhiteSpace(posmeFindCantidadCopias.Value))
+            {
+                CantidadCopias = Convert.ToInt32(posmeFindCantidadCopias.Value);
+            }
         });
     }
 
@@ -102,10 +107,16 @@ public class PosMeParameterViewModel : BaseViewModel
         {
             if (Validate())
             {               
-                posmeFindPrinter.Value      = Printer;
-                posmeFindInterval.Value     = $"{IntervalTime}";
+                posmeFindPrinter.Value        = Printer;
+                posmeFindInterval.Value       = $"{IntervalTime}";
+                posmeFindPrefijo.Value        = Prefijo;
+                posmeFindCantidadCopias.Value = $"{CantidadCopias}";
+
                 repositoryTbParameterSystem.PosMeUpdate(posmeFindPrinter);
                 repositoryTbParameterSystem.PosMeUpdate(posmeFindInterval);
+                repositoryTbParameterSystem.PosMeUpdate(posmeFindPrefijo);
+                repositoryTbParameterSystem.PosMeUpdate(posmeFindCantidadCopias);
+
                 Mensaje                     = Mensajes.MensajeParametrosGuardar;
                 PopupBackgroundColor        = Colors.Green;
                 LoadValuesDefault();
@@ -126,6 +137,13 @@ public class PosMeParameterViewModel : BaseViewModel
         PopUpShow = true;
     }
 
+    private int _cantidadCopias;
+
+    public int CantidadCopias
+    {
+        get =>_cantidadCopias; 
+        set =>SetProperty(ref _cantidadCopias, value);
+    }
     private int _intervalTime;
 
     public int IntervalTime

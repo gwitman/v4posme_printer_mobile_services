@@ -89,11 +89,12 @@ public class PosmeWatcherService : Service
                 return;
             }
 
-            var downloadPath = directoryDownloads.AbsolutePath;
-            var parameterPrefijo = await repositoryTbParameterSystem.PosMeFindPrefijo();
-            var pdfFiles = Directory.GetFiles(downloadPath, $"{parameterPrefijo.Value}*.pdf");
-            var parameterPrinter = await repositoryTbParameterSystem.PosMeFindPrinter();
-
+            var downloadPath        = directoryDownloads.AbsolutePath;
+            var parameterPrefijo    = await repositoryTbParameterSystem.PosMeFindPrefijo();
+            var pdfFiles            = Directory.GetFiles(downloadPath, $"{parameterPrefijo.Value}*.pdf");
+            var parameterPrinter    = await repositoryTbParameterSystem.PosMeFindPrinter();
+            var parameterCopias     = await repositoryTbParameterSystem.PosMeFindCantidadCopias();
+            var copias              = Convert.ToInt32(parameterCopias.Value);
             if (string.IsNullOrWhiteSpace(parameterPrinter.Value))
             {
                 return;
@@ -103,23 +104,51 @@ public class PosmeWatcherService : Service
             foreach (var file in pdfFiles)
             {
                 var filename = Path.GetFileName(file);
+                if (!filename.Contains(parameterPrefijo.Value!, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    continue;
+                }
                 try
                 {
-                    var pathFile = new Java.IO.File(file);
-                    Debug.WriteLine(pathFile.ToURI());
-                    var readBase64 = PdfRendererHelper.ConvertPdfToBase64(pathFile);
-                    foreach (var read in readBase64)
+                    using var pathFile = new Java.IO.File(file);
+                    if (!pathFile.Exists())
                     {
-                        var image = Convert.FromBase64String(read);
-                        printer.Image(SKBitmap.Decode(image));
-                        printer.Print();
+                        System.Diagnostics.Debug.WriteLine($"Archivo original no existe: {pathFile.AbsolutePath}");
+                        return;
                     }
-
+                    var readBase64 = PdfRendererHelper.ConvertPdfToBase64(pathFile);
                     // Quitar el prefijo "posme_" del nombre del archivo
-                    var newFilename = filename.Replace("posme_", "impreso_");
-                    var newPath = Path.Combine(downloadPath, newFilename);
-                    File.Move(file, newPath);
-                    System.Diagnostics.Debug.WriteLine($"Renombrado: {filename} → {newFilename}");
+                    var newFilename = filename.Replace(parameterPrefijo.Value, "impreso_");
+                    var newPath     = Path.Combine(downloadPath, newFilename);
+                    var renamed     = pathFile.RenameTo(new Java.IO.File(newPath));
+                    if (renamed)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Renombrado: {filename} → {newFilename}");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error al renombrar: {filename} → {newFilename}");
+                        return;
+                    }
+                        
+                    switch (readBase64.Length)
+                    {
+                        case 1:
+                            ProcessImage(readBase64[0], printer, copias);
+                            break;
+                        case > 1:
+                        {
+                            foreach (var read in readBase64)
+                            {
+                                ProcessImage(read, printer, copias);
+                            }
+
+                            break;
+                        }
+                        default:
+                            System.Diagnostics.Debug.WriteLine($"No hay datos que leer en el archivo {file}");
+                            break;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -130,6 +159,38 @@ public class PosmeWatcherService : Service
         catch (Exception e)
         {
             System.Diagnostics.Debug.WriteLine($"Error al escanear {e.Message}");
+        }
+    }
+
+    private void ProcessImage(string base64Image, Printer printer, int copies = 1)
+    {
+        if (string.IsNullOrWhiteSpace(base64Image))
+            throw new ArgumentException("La cadena Base64 no puede estar vacía", nameof(base64Image));
+    
+        if (printer == null)
+            throw new ArgumentNullException(nameof(printer));
+    
+        if (copies < 1)
+            throw new ArgumentOutOfRangeException(nameof(copies), "El número de copias debe ser al menos 1");
+
+        try
+        {
+            var imageData       = Convert.FromBase64String(base64Image);
+            using var bitmap    = SKBitmap.Decode(imageData);
+            if (bitmap == null)
+                throw new InvalidOperationException("No se pudo decodificar la imagen desde Base64");
+            
+            printer.Image(bitmap);
+            
+            for (var i = 0; i < copies; i++)
+            {
+                printer.Print();
+                System.Diagnostics.Debug.WriteLine($"Imprimiendo archivo {i} procesado");
+            }
+        }
+        catch (FormatException ex)
+        {
+            throw new InvalidOperationException("La cadena Base64 no tiene un formato válido", ex);
         }
     }
 

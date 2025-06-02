@@ -9,6 +9,7 @@ public interface IRepositoryTbParameterSystem : IRepositoryFacade<TbParameterSys
     Task<TbParameterSystem> PosMeFindPrinter();
     Task<TbParameterSystem> PosMeFindInterval();
     Task<TbParameterSystem> PosMeFindPrefijo();
+    Task<TbParameterSystem> PosMeFindCantidadCopias();
     Task<TbParameterSystem> PosMeFindByName(string name);
 }
 
@@ -32,6 +33,12 @@ public class RepositoryTbParameterSystem(DataBase dataBase) : RepositoryFacade<T
     {
         return dataBase.Database.Table<TbParameterSystem>()
             .FirstOrDefaultAsync(system => system.Name == Constantes.ParametroPrefijo);
+    }
+
+    public Task<TbParameterSystem> PosMeFindCantidadCopias()
+    {
+        return dataBase.Database.Table<TbParameterSystem>()
+            .FirstOrDefaultAsync(system => system.Name == Constantes.CantidadCopias);
     }
 
     public Task<TbParameterSystem> PosMeFindByName(string name)
