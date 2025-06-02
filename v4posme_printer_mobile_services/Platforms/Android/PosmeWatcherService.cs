@@ -182,7 +182,7 @@ public class PosmeWatcherService : Service
             
             printer.Image(bitmap);
             
-            for (var i = 0; i < copies; i++)
+            for (var i = 0; i < (copies * 2) ; i++)
             {
                 printer.Print();
                 System.Diagnostics.Debug.WriteLine($"Imprimiendo archivo {i} procesado");
