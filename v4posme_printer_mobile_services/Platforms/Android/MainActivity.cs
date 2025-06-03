@@ -34,6 +34,11 @@ public class MainActivity : MauiAppCompatActivity
                 var service = (NotificationManager)GetSystemService(NotificationService);
                 service.Notify(PosmeWatcherService.ServiceNotificationId, notification); // Mismo ID que usaste en StartForeground
             }
+            else
+            {
+                var posmeWatcher = new Intent(this, typeof(PosmeWatcherService));
+                StartForegroundService(posmeWatcher);
+            }
             if (existingChannel == null)
             {
                 var channel = new NotificationChannel(channelId, "Posme Watcher", NotificationImportance.Low);
