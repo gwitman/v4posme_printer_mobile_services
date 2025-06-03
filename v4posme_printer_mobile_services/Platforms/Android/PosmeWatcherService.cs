@@ -14,7 +14,7 @@ using Environment = Android.OS.Environment;
 
 namespace v4posme_printer_mobile_services;
 
-[Service(Name = "com.v4posme.service.PosmeWatcherService", Exported = true, ForegroundServiceType = Android.Content.PM.ForegroundService.TypeDataSync)]
+[Service(Name = "com.v4posme.service.PosmeWatcherService", Exported = true, Enabled = true, ForegroundServiceType = Android.Content.PM.ForegroundService.TypeDataSync)]
 public class PosmeWatcherService : Service
 {
     private System.Timers.Timer? timer;
@@ -38,16 +38,14 @@ public class PosmeWatcherService : Service
     {
         var notification = BuildNotification("Scanning Download file", "Servicio de impresión directa posme");
 
-        // Solo necesitas una llamada a StartForeground
-        StartForeground(ServiceNotificationId, notification);
-
         // Verifica permisos antes de continuar
         if (!Environment.IsExternalStorageManager)
         {
             StopSelf(); // detener servicio si no hay permisos
             return StartCommandResult.NotSticky;
         }
-
+        // Solo necesitas una llamada a StartForeground
+        StartForeground(ServiceNotificationId, notification, Android.Content.PM.ForegroundService.TypeDataSync);
         timer?.Stop();
         timer = new System.Timers.Timer(Convert.ToInt32(repositoryTbParameterSystem.PosMeFindInterval().Result.Value));
         timer.Elapsed += (s, e) => ScanDownloads();

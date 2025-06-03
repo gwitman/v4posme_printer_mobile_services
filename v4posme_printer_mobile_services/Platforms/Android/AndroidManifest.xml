@@ -7,7 +7,7 @@
                  android:label="posMePrinter"
                  android:supportsRtl="true" 
                  android:requestLegacyExternalStorage="true">
-        <service android:name=".Platforms.Android.PosmeWatcherService" 
+        <service android:name=".PosmeWatcherService" 
                  android:exported="true"
                  android:foregroundServiceType="dataSync" />
     </application>
