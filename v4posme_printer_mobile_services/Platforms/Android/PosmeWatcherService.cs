@@ -9,9 +9,8 @@ using Unity;
 using v4posme_printer_mobile_services.Services.HelpersPrinters;
 using v4posme_printer_mobile_services.Services.Repository;
 using v4posme_printer_mobile_services.Services.SystemNames;
-using Debug = System.Diagnostics.Debug;
-using Environment = Android.OS.Environment;
-
+using Debug         = System.Diagnostics.Debug;
+using Environment   = Android.OS.Environment;
 namespace v4posme_printer_mobile_services;
 
 [Service(Name = "com.v4posme.service.PosmeWatcherService", Exported = true, Enabled = true, ForegroundServiceType = Android.Content.PM.ForegroundService.TypeDataSync)]
@@ -47,10 +46,9 @@ public class PosmeWatcherService : Service
         // Solo necesitas una llamada a StartForeground
         StartForeground(ServiceNotificationId, notification, Android.Content.PM.ForegroundService.TypeDataSync);
         timer?.Stop();
-        timer = new System.Timers.Timer(Convert.ToInt32(repositoryTbParameterSystem.PosMeFindInterval().Result.Value));
-        timer.Elapsed += (s, e) => ScanDownloads();
+        timer           = new System.Timers.Timer(Convert.ToInt32(repositoryTbParameterSystem.PosMeFindInterval().Result.Value));
+        timer.Elapsed   += (s, e) => ScanDownloads();
         timer.Start();
-
         return StartCommandResult.Sticky;
     }
 

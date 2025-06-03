@@ -7,9 +7,6 @@
                  android:label="posMePrinter"
                  android:supportsRtl="true" 
                  android:requestLegacyExternalStorage="true">
-        <service android:name=".PosmeWatcherService" 
-                 android:exported="true"
-                 android:foregroundServiceType="dataSync" />
     </application>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
