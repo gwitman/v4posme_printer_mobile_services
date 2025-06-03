@@ -37,6 +37,7 @@ public class DataBase
                     new() { Name = Constantes.CustomerOrderCustomer, Description = "Orden de clientes en pantalla cliente", Value = "" },
                     new() { Name = Constantes.CustomerOrderInvoice, Description = "Orden de clientes en pantalla invoice", Value = "" },
                     new() { Name = Constantes.CantidadCopias, Description = "Cantidad copias a imprimir", Value = "1" },
+                    new() { Name = Constantes.ShowNotificationScan, Description = "Cantidad copias a imprimir", Value = "1" },
                 };
                 await Database.InsertAllAsync(parametrosDefault);
             }

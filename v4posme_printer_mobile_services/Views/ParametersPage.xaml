@@ -107,6 +107,12 @@
                             Text="{Binding Prefijo}"
                             LabelText="Prefijo de archivo" />
                     </dx:DXBorder>
+                    <dx:DXBorder Margin="15"
+                                 BackgroundColor="{AppThemeBinding Light={StaticResource CardColor}, Dark={StaticResource CardColorDark}}"
+                                 BorderThickness="0" CornerRadius="10">
+                        <dxe:CheckEdit Label="Mostrar Notificación:"
+                                       IsChecked="{Binding ShowNotification}"/>
+                    </dx:DXBorder>
                 </dx:DXStackLayout>
             </ScrollView>
         </RefreshView>

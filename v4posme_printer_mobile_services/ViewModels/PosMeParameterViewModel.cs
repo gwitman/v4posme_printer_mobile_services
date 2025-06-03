@@ -14,10 +14,11 @@ namespace v4posme_printer_mobile_services.ViewModels;
 public class PosMeParameterViewModel : BaseViewModel
 {
     private readonly IRepositoryTbParameterSystem repositoryTbParameterSystem;
-    private TbParameterSystem posmeFindPrinter         = new();
-    private TbParameterSystem posmeFindInterval        = new();
-    private TbParameterSystem posmeFindPrefijo         = new();
-    private TbParameterSystem posmeFindCantidadCopias  = new();
+    private TbParameterSystem posmeFindPrinter              = new();
+    private TbParameterSystem posmeFindInterval             = new();
+    private TbParameterSystem posmeFindPrefijo              = new();
+    private TbParameterSystem posmeFindCantidadCopias       = new();
+    private TbParameterSystem posmeFindShowNotificationScan = new();
     
     public ICommand RefreshCommand { get; }
     public ICommand SaveCommand { get; }
@@ -50,9 +51,8 @@ public class PosMeParameterViewModel : BaseViewModel
 
     private async void LoadValuesDefault()
     {
-        await Task.Run(async () =>
+        try
         {
-           
             posmeFindPrinter = await repositoryTbParameterSystem.PosMeFindPrinter();
             if (!string.IsNullOrWhiteSpace(posmeFindPrinter.Value))
             {
@@ -75,7 +75,16 @@ public class PosMeParameterViewModel : BaseViewModel
             {
                 CantidadCopias = Convert.ToInt32(posmeFindCantidadCopias.Value);
             }
-        });
+            posmeFindShowNotificationScan = await repositoryTbParameterSystem.PosMeFindShowNotificationScan();
+            if (!string.IsNullOrWhiteSpace(posmeFindShowNotificationScan.Value))
+            {
+                ShowNotification = posmeFindShowNotificationScan.Value == "1";
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.WriteLine(e.Message);
+        }
     }
 
     private bool Validate()
@@ -85,6 +94,14 @@ public class PosMeParameterViewModel : BaseViewModel
         return !( PrinterHasError);
     }
 
+    private bool _showNotification;
+
+    public bool ShowNotification
+    {
+        get => _showNotification; 
+        set => SetProperty(ref _showNotification,value);
+    }
+    
     private bool _printerhasError;
 
     public bool PrinterHasError
@@ -111,11 +128,12 @@ public class PosMeParameterViewModel : BaseViewModel
                 posmeFindInterval.Value       = $"{IntervalTime}";
                 posmeFindPrefijo.Value        = Prefijo;
                 posmeFindCantidadCopias.Value = $"{CantidadCopias}";
-
+                posmeFindShowNotificationScan.Value = ShowNotification ? "1" : "0";
                 repositoryTbParameterSystem.PosMeUpdate(posmeFindPrinter);
                 repositoryTbParameterSystem.PosMeUpdate(posmeFindInterval);
                 repositoryTbParameterSystem.PosMeUpdate(posmeFindPrefijo);
                 repositoryTbParameterSystem.PosMeUpdate(posmeFindCantidadCopias);
+                repositoryTbParameterSystem.PosMeUpdate(posmeFindShowNotificationScan);
 
                 Mensaje                     = Mensajes.MensajeParametrosGuardar;
                 PopupBackgroundColor        = Colors.Green;
