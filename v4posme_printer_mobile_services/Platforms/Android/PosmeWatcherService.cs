@@ -45,7 +45,7 @@ public class PosmeWatcherService : Service
     {
         try
         {
-            var notification = BuildNotification("Escaneando archivos para imprimir", "Servicio de impresión directa POSME en ejecución");
+            var notification = BuildNotification(Constantes.TituloNotificacion, Constantes.ServicioEjecucion);
             StartForeground(ServiceNotificationId, notification, Android.Content.PM.ForegroundService.TypeDataSync);
 
             if (!CheckPermissions())
@@ -95,9 +95,9 @@ public class PosmeWatcherService : Service
 
     private void ShowPermissionErrorNotification()
     {
-        var notification = new NotificationCompat.Builder(this, "posme_channel")
-            .SetContentTitle("Permisos requeridos")
-            .SetContentText("El servicio necesita permisos de almacenamiento para funcionar")
+        var notification = new NotificationCompat.Builder(this, Constantes.ChanelNotification)
+            .SetContentTitle(Constantes.PermisoRequeridoTitulo)
+            .SetContentText(Constantes.PermisoRequeridoText)
             .SetSmallIcon(Resource.Drawable.posme) // Asegúrate de tener este recurso
             .SetPriority(NotificationCompat.PriorityHigh)
             .Build();
@@ -141,11 +141,11 @@ public class PosmeWatcherService : Service
         if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
         {
             var channel = new NotificationChannel(
-                "posme_channel",
-                "Buscando archivos POSME a imprimir",
+                Constantes.ChanelNotification,
+                Constantes.BuscandoArchivos,
                 NotificationImportance.High)
             {
-                Description = "Canal para servicio de impresión POSME",
+                Description = Constantes.ChanelDescription,
                 LockscreenVisibility = NotificationVisibility.Public
             };
             
@@ -203,7 +203,7 @@ public class PosmeWatcherService : Service
         catch (Exception ex)
         {
             Debug.WriteLine($"Error durante el escaneo: {ex.Message}");
-            UpdateNotification("Error en el servicio", $"Error: {ex.Message}");
+            UpdateNotification(Constantes.ErrorNotification, $"Error: {ex.Message}");
         }
         finally
         {
@@ -222,11 +222,11 @@ public class PosmeWatcherService : Service
     
     private void ShowScanCompleteNotification(int filesProcessed)
     {
-        var notification = new NotificationCompat.Builder(this, "posme_channel")
-            .SetContentTitle("Escaneo completado")
+        var notification = new NotificationCompat.Builder(this, Constantes.ChanelNotification)
+            .SetContentTitle(Constantes.EscaneoCompletadoTitulo)
             .SetContentText(filesProcessed > 0 
-                ? $"Se procesaron {filesProcessed} archivo(s)" 
-                : "No se encontraron nuevos archivos para imprimir")
+                ? Constantes.ArchivosProcesados.Replace("{filesProcessed}", $"{filesProcessed}") 
+                : Constantes.ArchivosNoEncontrados)
             .SetSmallIcon(Resource.Drawable.posme)
             .SetPriority(NotificationCompat.PriorityDefault)
             .SetAutoCancel(true)

@@ -5,6 +5,7 @@ using System.IO;
 using Android.Content;
 using Java.IO;
 using Microsoft.Maui.Controls.PlatformConfiguration;
+using v4posme_printer_mobile_services.Services.SystemNames;
 using Debug = System.Diagnostics.Debug;
 
 namespace v4posme_printer_mobile_services;
@@ -18,7 +19,7 @@ public static class PdfRendererHelper
             var parcelFileDescriptor = ParcelFileDescriptor.Open(file, ParcelFileMode.ReadOnly);
             if (parcelFileDescriptor is null)
             {
-                throw new Exception("No se pudo leer el archivo");
+                throw new Exception(Constantes.ErrorArchivo);
             }
             using var renderer  = new PdfRenderer(parcelFileDescriptor);
             var base64Images    = new string[renderer.PageCount];

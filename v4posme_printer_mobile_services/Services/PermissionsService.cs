@@ -11,6 +11,7 @@ using AndroidX.Core.Content;
 
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
+using v4posme_printer_mobile_services.Services.SystemNames;
 
 namespace v4posme_printer_mobile_services.Services;
 
@@ -53,7 +54,7 @@ public class PermissionsService
                 if (status != PermissionStatus.Granted)
                 {
                     allPermissionsGranted = false;
-                    await Application.Current.MainPage.DisplayAlert("Permiso denegado", permission.GetType().Name, "OK");
+                    await Application.Current.MainPage.DisplayAlert(Constantes.PermisoDenegado, permission.GetType().Name, "OK");
                 }
             }
         }
