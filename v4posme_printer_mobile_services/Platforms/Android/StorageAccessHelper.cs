@@ -7,8 +7,8 @@ public class StorageAccessHelper
 {
     public static void RequestManageExternalStoragePermission()
     {
-        var uri = Android.Net.Uri.Parse("package:" + Android.App.Application.Context.PackageName);
-        var intent = new Intent(Settings.ActionManageAppAllFilesAccessPermission, uri);
+        var uri         = Android.Net.Uri.Parse("package:" + Android.App.Application.Context.PackageName);
+        var intent      = new Intent(Settings.ActionManageAppAllFilesAccessPermission, uri);
         intent.AddFlags(ActivityFlags.NewTask);
         Android.App.Application.Context.StartActivity(intent);
     }

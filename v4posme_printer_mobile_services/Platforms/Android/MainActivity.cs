@@ -22,16 +22,15 @@ public class MainActivity : MauiAppCompatActivity
             {
                 RequestPermissions(new[] { Android.Manifest.Permission.PostNotifications }, 1001);
             }
-            var manager = (NotificationManager)GetSystemService(NotificationService);
-
-            var channelId = "posme_channel";
+            var manager         = (NotificationManager)GetSystemService(NotificationService);
+            var channelId       = "posme_channel";
             var existingChannel = manager.GetNotificationChannel(channelId);
             // Comprobar si el servicio aún se está ejecutando
             if (IsServiceRunning(typeof(PosmeWatcherService)))
             {
                 // Reconstruir y volver a mostrar la notificación
-                var notification = NotificationHelper.BuildNotification(this,"Scanning Download file", "Servicio de impresión directa posme");
-                var service = (NotificationManager)GetSystemService(NotificationService);
+                var notification    = NotificationHelper.BuildNotification(this,"Scanning Download file", "Servicio de impresión directa posme");
+                var service         = (NotificationManager)GetSystemService(NotificationService);
                 service.Notify(PosmeWatcherService.ServiceNotificationId, notification); // Mismo ID que usaste en StartForeground
             }
             else

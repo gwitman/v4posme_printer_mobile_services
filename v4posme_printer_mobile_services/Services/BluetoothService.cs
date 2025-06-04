@@ -13,9 +13,8 @@ namespace v4posme_printer_mobile_services.Services;
 public class BluetoothService(string nameDevice)
 {
     #if ANDROID
-    private readonly IAdapter _adapter = CrossBluetoothLE.Current.Adapter;
-
-    private static readonly UUID PrinterUuid = UUID.FromString("00001101-0000-1000-8000-00805F9B34FB")!;
+    private readonly IAdapter _adapter          = CrossBluetoothLE.Current.Adapter;
+    private static readonly UUID PrinterUuid    = UUID.FromString("00001101-0000-1000-8000-00805F9B34FB")!;
 
     public IDevice? ConnectDevice()
     {

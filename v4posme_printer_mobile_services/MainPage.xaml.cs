@@ -50,7 +50,7 @@ public partial class MainPage : ContentPage
             var intent = new Android.Content.Intent(Android.App.Application.Context, typeof(PosmeWatcherService));
             Android.App.Application.Context.StopService(intent);
             #endif
-            await DisplayAlert("Servicio detenido", "La vigilancia de archivos ha sido detenida.", "OK");
+            await DisplayAlert("Servicio detenido", "Scanning de archivos ha sido detenida.", "OK");
         }
         catch (Exception exception)
         {

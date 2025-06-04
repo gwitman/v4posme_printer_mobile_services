@@ -16,16 +16,16 @@ using Environment = Android.OS.Environment;
 namespace v4posme_printer_mobile_services;
 
 [Service(
-    Name = "com.v4posme.service.PosmeWatcherService", 
-    Exported = true, 
-    Enabled = true, 
+    Name        = "com.v4posme.service.PosmeWatcherService", 
+    Exported    = true, 
+    Enabled     = true, 
     ForegroundServiceType = Android.Content.PM.ForegroundService.TypeDataSync)]
 public class PosmeWatcherService : Service
 {
     private System.Timers.Timer? _timer;
     private bool _isScanning;
-    public const int ServiceNotificationId = 1001;
-    private readonly IRepositoryTbParameterSystem _repositoryTbParameterSystem = VariablesGlobales.UnityContainer.Resolve<IRepositoryTbParameterSystem>();
+    public const int ServiceNotificationId                                      = 1001;
+    private readonly IRepositoryTbParameterSystem _repositoryTbParameterSystem  = VariablesGlobales.UnityContainer.Resolve<IRepositoryTbParameterSystem>();
 
     public override void OnCreate()
     {
@@ -55,8 +55,7 @@ public class PosmeWatcherService : Service
                 return StartCommandResult.NotSticky;
             }
 
-            InitializeTimer();
-            
+            InitializeTimer();            
             return StartCommandResult.Sticky;
         }
         catch (Exception ex)
@@ -116,8 +115,8 @@ public class PosmeWatcherService : Service
 
             Task.Run(async () =>
             {
-                var interval = await _repositoryTbParameterSystem.PosMeFindInterval();
-                _timer = new System.Timers.Timer(Convert.ToInt32(interval.Value))
+                var interval    = await _repositoryTbParameterSystem.PosMeFindInterval();
+                _timer          = new System.Timers.Timer(Convert.ToInt32(interval.Value))
                 {
                     AutoReset = true
                 };
@@ -159,9 +158,9 @@ public class PosmeWatcherService : Service
     {
         if (_isScanning) return;
     
-        _isScanning = true;
+        _isScanning         = true;
         Debug.WriteLine("Iniciando escaneo de archivos...");
-        int filesProcessed = 0;
+        int filesProcessed  = 0;
 
         try
         {
@@ -172,10 +171,10 @@ public class PosmeWatcherService : Service
                 return;
             }
 
-            var downloadPath = directoryDownloads.AbsolutePath;
-            var parameterPrefijo = await _repositoryTbParameterSystem.PosMeFindPrefijo();
-            var parameterPrinter = await _repositoryTbParameterSystem.PosMeFindPrinter();
-            var parameterCopias = await _repositoryTbParameterSystem.PosMeFindCantidadCopias();
+            var downloadPath        = directoryDownloads.AbsolutePath;
+            var parameterPrefijo    = await _repositoryTbParameterSystem.PosMeFindPrefijo();
+            var parameterPrinter    = await _repositoryTbParameterSystem.PosMeFindPrinter();
+            var parameterCopias     = await _repositoryTbParameterSystem.PosMeFindCantidadCopias();
 
             if (string.IsNullOrWhiteSpace(parameterPrinter.Value))
             {
@@ -191,7 +190,7 @@ public class PosmeWatcherService : Service
             }
 
             var printer = new Printer(parameterPrinter.Value);
-            var copias = Convert.ToInt32(parameterCopias.Value);
+            var copias  = Convert.ToInt32(parameterCopias.Value);
 
             foreach (var file in pdfFiles)
             {
@@ -212,7 +211,7 @@ public class PosmeWatcherService : Service
             Debug.WriteLine("Escaneo completado");
         
             // Mostrar notificación de resultado
-            var showNotificationParameter = await _repositoryTbParameterSystem.PosMeFindShowNotificationScan();
+            var showNotificationParameter   = await _repositoryTbParameterSystem.PosMeFindShowNotificationScan();
             var show = showNotificationParameter.Value == "1";
             if (show)
             {
@@ -242,7 +241,7 @@ public class PosmeWatcherService : Service
     {
         try
         {
-            var filename = Path.GetFileName(filePath);
+            var filename        = Path.GetFileName(filePath);
             Debug.WriteLine($"Procesando archivo: {filename}");
 
             using var pathFile = new Java.IO.File(filePath);
@@ -260,8 +259,8 @@ public class PosmeWatcherService : Service
             }
 
             // Renombrar archivo para marcarlo como procesado
-            var newFilename = filename.Replace(prefix, "impreso_");
-            var newPath = Path.Combine(downloadPath, newFilename);
+            var newFilename     = filename.Replace(prefix, "impreso_");
+            var newPath         = Path.Combine(downloadPath, newFilename);
         
             if (File.Exists(newPath))
             {
@@ -304,8 +303,8 @@ public class PosmeWatcherService : Service
         {
             await Task.Run(() =>
             {
-                var imageData = Convert.FromBase64String(base64Image);
-                using var bitmap = SKBitmap.Decode(imageData);
+                var imageData       = Convert.FromBase64String(base64Image);
+                using var bitmap    = SKBitmap.Decode(imageData);
                 if (bitmap == null)
                 {
                     Debug.WriteLine("No se pudo decodificar la imagen desde Base64");
@@ -331,7 +330,7 @@ public class PosmeWatcherService : Service
     {
         try
         {
-            var notification = BuildNotification(title, text);
+            var notification        = BuildNotification(title, text);
             var notificationManager = (NotificationManager)GetSystemService(NotificationService);
             notificationManager.Notify(ServiceNotificationId, notification);
         }
