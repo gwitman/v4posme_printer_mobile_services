@@ -43,7 +43,7 @@ public static class PdfRendererHelper
                 using var stream = new MemoryStream();
                 bitmap.Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, stream);
                 base64Images[i] = Convert.ToBase64String(stream.ToArray());
-
+                page.Close();
                 bitmap.Recycle();
             }
             renderer.Close();
