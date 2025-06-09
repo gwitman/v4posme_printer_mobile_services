@@ -10,6 +10,7 @@ using Microsoft.Maui.Hosting;
 [assembly: UsesPermission(Manifest.Permission.BluetoothAdmin, MaxSdkVersion = 30)]
 [assembly: UsesPermission(Manifest.Permission.AccessFineLocation, MaxSdkVersion = 30)]
 [assembly: UsesPermission(Manifest.Permission.AccessCoarseLocation, MaxSdkVersion = 30)]
+[assembly: UsesPermission(Manifest.Permission.ForegroundService, MaxSdkVersion = 30)]
 namespace v4posme_printer_mobile_services;
 
 [Application]

@@ -12,6 +12,7 @@ using v4posme_printer_mobile_services.Services.Repository;
 using v4posme_printer_mobile_services.Services.SystemNames;
 using Debug = System.Diagnostics.Debug;
 using Environment = Android.OS.Environment;
+using Android.Runtime;
 
 namespace v4posme_printer_mobile_services;
 
@@ -41,6 +42,7 @@ public class PosmeWatcherService : Service
         }
     }
 
+    [return: GeneratedEnum]
     public override StartCommandResult OnStartCommand(Intent? intent, StartCommandFlags flags, int startId)
     {
         try
@@ -60,7 +62,7 @@ public class PosmeWatcherService : Service
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Error en OnStartCommand: {ex.Message}");
+            UpdateNotification("Error", $"Error: {ex.Message}");
             return StartCommandResult.NotSticky;
         }
     }

@@ -4,6 +4,7 @@ using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Microsoft.Maui;
+using v4posme_printer_mobile_services.Services.SystemNames;
 
 namespace v4posme_printer_mobile_services;
 
@@ -16,6 +17,18 @@ public class MainActivity : MauiAppCompatActivity
     {
         base.OnCreate(savedInstanceState);
 
+        if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
+        {
+            var packageName = PackageName;
+            var pm = (PowerManager)GetSystemService(PowerService);
+            if (!pm.IsIgnoringBatteryOptimizations(packageName))
+            {
+                var intent = new Intent(Android.Provider.Settings.ActionRequestIgnoreBatteryOptimizations);
+                intent.SetData(Android.Net.Uri.Parse(Constantes.Package + packageName));
+                StartActivity(intent);
+            }
+        }
+
         if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
         {
             if (CheckSelfPermission(Android.Manifest.Permission.PostNotifications) != Permission.Granted)
@@ -23,13 +36,12 @@ public class MainActivity : MauiAppCompatActivity
                 RequestPermissions(new[] { Android.Manifest.Permission.PostNotifications }, 1001);
             }
             var manager         = (NotificationManager)GetSystemService(NotificationService);
-            var channelId       = "posme_channel";
-            var existingChannel = manager.GetNotificationChannel(channelId);
+            var existingChannel = manager.GetNotificationChannel(Constantes.ChanelNotification);
             // Comprobar si el servicio aún se está ejecutando
             if (IsServiceRunning(typeof(PosmeWatcherService)))
             {
                 // Reconstruir y volver a mostrar la notificación
-                var notification    = NotificationHelper.BuildNotification(this,"Scanning Download file", "Servicio de impresión directa posme");
+                var notification    = NotificationHelper.BuildNotification(this,Constantes.TituloNotificacion, Constantes.ServicioEjecucion);
                 var service         = (NotificationManager)GetSystemService(NotificationService);
                 service.Notify(PosmeWatcherService.ServiceNotificationId, notification); // Mismo ID que usaste en StartForeground
             }
@@ -40,7 +52,7 @@ public class MainActivity : MauiAppCompatActivity
             }
             if (existingChannel == null)
             {
-                var channel = new NotificationChannel(channelId, "Posme Watcher", NotificationImportance.Low);
+                var channel = new NotificationChannel(Constantes.ChanelNotification, Constantes.PosmeWatcher, NotificationImportance.Low);
                 manager.CreateNotificationChannel(channel);
             }
             else if (existingChannel.Importance == NotificationImportance.None)
@@ -50,6 +62,11 @@ public class MainActivity : MauiAppCompatActivity
                 intent.PutExtra(Android.Provider.Settings.ExtraAppPackage, PackageName);
                 StartActivity(intent);
             }
+        }
+        else
+        {
+            var posmeWatcher = new Intent(this, typeof(PosmeWatcherService));
+            StartService(posmeWatcher);
         }
     }
 
